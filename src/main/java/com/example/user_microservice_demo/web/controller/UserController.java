@@ -6,6 +6,7 @@ import com.example.user_microservice_demo.web.model.UserReqModel;
 import com.example.user_microservice_demo.web.model.UserSimpleRespModel;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -32,8 +34,8 @@ public class UserController {
     }
 
     @GetMapping
-    ResponseEntity<List<User>> findAll() {
-        List<User> users = userService.findAll();
+    ResponseEntity<List<UserSimpleRespModel>> findAll() {
+        List<UserSimpleRespModel> users = userService.findAll();
         if (users.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

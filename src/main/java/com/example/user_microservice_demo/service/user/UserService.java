@@ -11,7 +11,7 @@ public interface UserService {
 
     User findById(Long id) throws EntityNotFoundException;
 
-    List<User> findAll();
+    List<UserSimpleRespModel> findAll();
 
     List<UserSimpleRespModel> findByName(String name);
 
