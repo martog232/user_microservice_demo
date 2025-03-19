@@ -19,6 +19,5 @@ public interface UserService {
 
     UserSimpleRespModel createUser(UserReqModel user);
 
-
     void deleteUserById(Long id);
 }

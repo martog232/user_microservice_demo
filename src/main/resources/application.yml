@@ -21,6 +21,15 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
+  kafka:
+    bootstrap-servers: localhost:9094
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+app:
+  carServiceUrl: http://localhost:8081/api/cars
+
 #eureka:
 #  client:
 #    register-with-eureka: true
