@@ -1,17 +1,14 @@
 package com.example.user_microservice_demo.data.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Table(name = "countries")
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,7 +24,7 @@ public class Country {
     @Column(name = "code")
     private String code;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "country")
     private List<User> users;
+
 }

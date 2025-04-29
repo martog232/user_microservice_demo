@@ -1,11 +1,14 @@
 package com.example.user_microservice_demo.web.controller;
 
+import com.example.user_microservice_demo.client.CarServiceApiClient;
 import com.example.user_microservice_demo.data.entity.User;
 import com.example.user_microservice_demo.service.user.UserService;
+import com.example.user_microservice_demo.web.model.CarRespModel;
 import com.example.user_microservice_demo.web.model.UserReqModel;
 import com.example.user_microservice_demo.web.model.UserSimpleRespModel;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,12 +16,14 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+    private final CarServiceApiClient carServiceApiClient;
     private final RestTemplate restTemplate;
 
     @GetMapping("/{id}")
@@ -32,12 +37,8 @@ public class UserController {
     }
 
     @GetMapping
-    ResponseEntity<List<User>> findAll() {
-        List<User> users = userService.findAll();
-        if (users.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(users);
+    ResponseEntity<List<UserSimpleRespModel>> findAll() {
+        return ResponseEntity.ok(userService.findAll());
     }
 
     @GetMapping("/by-county")
@@ -55,19 +56,15 @@ public class UserController {
         try {
             UserSimpleRespModel createdUser = userService.createUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error("Error creating user: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping("/{userId}/cars")
-    public ResponseEntity<String> getUserCars(@PathVariable Long userId) {
-        String carServiceUrl = "http://localhost:8081/api/cars/user/%d".formatted(userId);
-        String cars = restTemplate.getForObject(carServiceUrl, String.class);
-        return ResponseEntity.ok(cars);
+    public ResponseEntity<List<CarRespModel>> getUserCars(@PathVariable Long userId) {
+        return ResponseEntity.ok(carServiceApiClient.getCarsByOwner(userId));
     }
 
 
